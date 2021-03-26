@@ -34,6 +34,22 @@ class ViewBasic @JvmOverloads constructor(
      *  (context attrs defStyleAttr) 不会自动调用，一般是在第二个构造函数里主动调用，如：View 有 Style 属性时。
      *  (context attrs defStyleAttr defStyleRes) API 21 之后才使用，不会自动调用，一般是在第二个构造函数里主动调用，如：View 有 Style 属性时。
      *
+     *  todo AttributeSet 与自定义属性
+     *  系统自带的 View 可以在 xml 文件中配置属性，对于写好的自定义 View 同样可以在 xml 文件中配置属性，
+     *  为了使自定义的 View 的属性可以在 xml 文件中配置，需要以下 4 个步骤：
+     *  1. 通过 <declare-styleable> 为自定义 View 添加属性。
+     *  2. 在 xml 文件中为相应的属性声明属性值。
+     *  3. 在运行时（一般为构造函数）获取属性值。
+     *  4. 将获取到的属性值应用到 View。
+     *
+     *  todo View 视图结构
+     *  PhoneWindow 是 Android 系统中最基本的窗口系统，继承自 Window 类，
+     *      负责管理界面显示以及事件响应。它是 Activity 与 View 系统交互的接口。
+     *  DecorView 是 PhoneWindow 中的起始点 View，继承于 View 类，作为整个视图容器来使用。
+     *      用于设置窗口属性。它本质上是一个 FrameLayout
+     *  ViewRoot 在 Activity 启动时创建，负责管理、布局、渲染窗口 UI。
+     *  对于多 View 的视图，其结构时树形结构。
+     *
      */
 
     /**
