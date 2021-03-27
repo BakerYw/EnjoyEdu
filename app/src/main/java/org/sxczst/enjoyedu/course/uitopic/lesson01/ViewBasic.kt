@@ -50,10 +50,39 @@ class ViewBasic @JvmOverloads constructor(
      *  ViewRoot 在 Activity 启动时创建，负责管理、布局、渲染窗口 UI。
      *  对于多 View 的视图，其结构时树形结构。
      *
+     *  todo Android 坐标系
+     *  - 屏幕的左上角为坐标原点
+     *  - 向右为 x 轴增大方向
+     *  - 向下为 y 轴增大方向
+     *  - 角度为顺时针方向
+     *
+     *  todo View 的位置
+     *  - Top：子 View 上边界到父 View 上边界的距离
+     *  - Left：子 View 左边界到父 View 左边界的距离
+     *  - Bottom：子 View 下边界到父 View 上边界的距离
+     *  - Right: 子 View 右边界到父 View 左边界的距离
+     *  - getX() getY()：触摸点相对于其所在组件坐标系的坐标
+     *  - getRawX() getRawY()：触摸点相对于屏幕默认坐标系的坐标
+     *
+     *  todo Android 中颜色相关内容
+     *
+     *  todo View 树的绘制流程
+     *  ViewRootImpl:ViewParent
+     *  WindowManagerGlobal.addView -> ViewRootImpl.setView -> ViewRootImpl.requestLayout -> ViewRootImpl.scheduleTraversals
+     *  -> TraversalRunnable.run -> ViewRootImpl.doTraversal -> ViewRootImpl.performTraversals
+     *  -> 三大流程：测量，布局，绘制。
+     *
      */
 
     /**
      * 测量决定 View 的大小。
+     *
+     * 1. 系统为什么要有 measure 过程？
+     *      view 宽高允许设置为 wrap_content、match_parent，在显示之前需要计算其真正的大小。
+     * 2. measure 过程都干了什么事情？
+     *      将 View 属性设置的自适应大小，计算出显示在屏幕上的具体像素大小。
+     * 3. 对于自适应的尺寸机制，如何合理地测量一颗 View 树？
+     *
      */
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
