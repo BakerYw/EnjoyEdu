@@ -72,6 +72,17 @@ class ViewBasic @JvmOverloads constructor(
      *  -> TraversalRunnable.run -> ViewRootImpl.doTraversal -> ViewRootImpl.performTraversals
      *  -> 三大流程：测量，布局，绘制。
      *
+     *  todo Android MeasureSpec
+     *  测量模式：高 2 位表示，即 31，32 位。
+     *      UNSPECIFIED 父控件不做任何限制
+     *      EXACTLY 精确的大小
+     *      AT_MOST 不能大于父控件的大小
+     *  具体测量大小：低 30 位表示
+     *
+     *  常用：makeMeasureSpec()，getMode()，getSize()
+     *
+     *  ViewGroup.getChildMeasureSpec() 会发生多次测量
+     *
      */
 
     /**
