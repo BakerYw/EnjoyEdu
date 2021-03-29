@@ -83,6 +83,22 @@ class ViewBasic @JvmOverloads constructor(
      *
      *  ViewGroup.getChildMeasureSpec() 会发生多次测量
      *
+     *  DecorView 的大小
+     *
+     *  todo LayoutParams
+     *  在布局 xml 文件中一直在用
+     *  MarginLayoutParams
+     *  自定义 LayoutParams
+     *      创建自定义属性
+     *      继承 MarginLayoutParams
+     *      重写 ViewGroup 几个与 LayoutParams 相关 的方法
+     *          checkLayoutParams
+     *          generateDefaultLayoutParams
+     *          generateLayoutParams
+     *          generateLayoutParams(ViewGroup.LayoutParams)
+     *          generateLayoutParams(AttributeSet)
+     *  LayoutParams 常见的子类
+     *
      */
 
     /**
