@@ -99,6 +99,10 @@ class ViewBasic @JvmOverloads constructor(
      *          generateLayoutParams(AttributeSet)
      *  LayoutParams 常见的子类
      *
+     *  todo Activity PhoneWindow DecorView LinearLayout ContentView
+     *
+     *  todo 作业：measure过程 时序图。
+     *
      */
 
     /**
