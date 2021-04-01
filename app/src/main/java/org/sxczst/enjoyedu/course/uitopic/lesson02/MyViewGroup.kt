@@ -91,8 +91,40 @@ class MyViewGroup @JvmOverloads constructor(
         setMeasuredDimension(width, height)
     }
 
+    /**
+     * todo layout 流程
+     *
+     * todo 作业：layout 时序图
+     *
+     * 1. 根据规则确定子 View 的位置。
+     *
+     * todo 通用实现方式
+     * 1. 遍历子 View
+     * 2. 确定自己的规则
+     * 3. 子 View 的测量尺寸
+     * 4. left top right bottom
+     * 5. child.layout
+     *
+     */
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        TODO("Not yet implemented")
+        var left: Int
+        var top = 0
+        var right: Int
+        var bottom: Int
+        // 1. 遍历子 View
+        val childCount = childCount
+        for (i in 0 until childCount) {
+            val childView = getChildAt(i)
+            left = i * OFFSET
+            right = left + childView.measuredWidth
+            bottom = top + childView.measuredHeight
+            childView.layout(left, top, right, bottom)
+            top = bottom
+        }
+        // 2. 确定自己的规则
+        // 3. 子 View 的测量尺寸
+        // 4. left top right bottom
+        // 5. child.layout
     }
 
     companion object {
