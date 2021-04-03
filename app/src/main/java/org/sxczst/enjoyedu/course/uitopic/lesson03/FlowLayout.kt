@@ -28,11 +28,11 @@ class FlowLayout @JvmOverloads constructor(
 
     // 初始化参数列表
 
-    private var lineViews = arrayListOf<View>()
+    private lateinit var lineViews: ArrayList<View>
 
-    private val views = arrayListOf<List<View>>()
+    private lateinit var views: ArrayList<List<View>>
 
-    private val heights = arrayListOf<Int>()
+    private lateinit var heights: ArrayList<Int>
 
     init {
         /**
@@ -47,6 +47,14 @@ class FlowLayout @JvmOverloads constructor(
         } finally {
             a.recycle()
         }
+    }
+
+    private fun init() {
+        lineViews = arrayListOf()
+
+        views = arrayListOf()
+
+        heights = arrayListOf()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -73,6 +81,7 @@ class FlowLayout @JvmOverloads constructor(
         var flowLayoutHeight = 0
 
         // 初始化参数列表
+        init()
 
         // 遍历所有的子 View，对子 View 进行测量，分配到具体的行
         val childCount = childCount
@@ -89,24 +98,63 @@ class FlowLayout @JvmOverloads constructor(
             // 如果放不下，就换行 并保存当前行的所有子 View，累加行高，当前的宽度，高度 置零。
             if (currentWidth + childWidth > widthSize) {
                 // 换行
-                views += lineViews
+                views.add(lineViews)
                 lineViews = arrayListOf()
                 flowLayoutWidth = max(flowLayoutWidth, currentWidth)
                 flowLayoutHeight += currentHeight
-                heights += currentHeight
+                heights.add(currentHeight)
                 currentWidth = 0
                 currentHeight = 0
             }
             lineViews.add(childView)
             currentWidth += childWidth
-            currentHeight = max(currentHeight, childHeight)
+            if (layoutParams.height != ViewGroup.LayoutParams.MATCH_PARENT) {
+                currentHeight = max(currentHeight, childHeight)
+            }
+
+            if (i == childCount - 1) {
+                // 最后一行
+                views.add(lineViews)
+                flowLayoutWidth = max(flowLayoutWidth, currentWidth)
+                flowLayoutHeight += currentHeight
+                heights.add(currentHeight)
+            }
         }
+
+        // 重新测量一次 layout_height = match_parent
+        reMeasureChild(widthMeasureSpec, heightMeasureSpec)
 
         // FlowLayout 最终的宽高
         setMeasuredDimension(
             if (widthMode == MeasureSpec.EXACTLY) widthSize else flowLayoutWidth,
             if (heightMode == MeasureSpec.EXACTLY) heightSize else flowLayoutHeight,
         )
+    }
+
+
+    /**
+     * 重新测量一次 layout_height = match_parent
+     */
+    private fun reMeasureChild(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val lineCount = views.size
+        for (i in 0 until lineCount) {
+            // 每一行行高
+            val lineHeight = heights[i]
+            // 每一行的子 View
+            val lineViews = views[i]
+            val lineViewSize = lineViews.size
+            for (j in 0 until lineViewSize) {
+                val childView = lineViews[j]
+                val layoutParams = childView.layoutParams
+                if (layoutParams.height == ViewGroup.LayoutParams.MATCH_PARENT) {
+                    val childWidthSpec =
+                        getChildMeasureSpec(widthMeasureSpec, 0, layoutParams.width)
+                    val childHeightSpec =
+                        getChildMeasureSpec(heightMeasureSpec, 0, lineHeight)
+                    childView.measure(childWidthSpec, childHeightSpec)
+                }
+            }
+        }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
