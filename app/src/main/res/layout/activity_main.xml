@@ -8,9 +8,9 @@
 
     <fragment
         android:id="@+id/container"
-        android:name="org.sxczst.enjoyedu.course.uitopic.lesson03.FlowLayoutFragment"
+        android:name="org.sxczst.enjoyedu.course.frameworktopic.dispatchtouchevent.scrollviewclash.ScrollViewClashFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/fragment_ui_topic_flow_layout" />
+        tools:layout="@layout/fragment_framework_topic_dispatch_scroll_view_clash" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
