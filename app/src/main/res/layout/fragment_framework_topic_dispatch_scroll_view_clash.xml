@@ -29,7 +29,7 @@
                 android:layout_height="100dp"
                 android:src="@mipmap/enjoy_edu_logo" />
 
-            <ScrollView
+            <org.sxczst.enjoyedu.course.frameworktopic.dispatchtouchevent.scrollviewclash.MyScrollView
                 android:layout_width="match_parent"
                 android:layout_height="200dp">
 
@@ -68,7 +68,7 @@
                         android:layout_height="50dp"
                         android:src="@mipmap/enjoy_edu_logo" />
                 </LinearLayout>
-            </ScrollView>
+            </org.sxczst.enjoyedu.course.frameworktopic.dispatchtouchevent.scrollviewclash.MyScrollView>
 
             <ImageView
                 android:layout_width="match_parent"
