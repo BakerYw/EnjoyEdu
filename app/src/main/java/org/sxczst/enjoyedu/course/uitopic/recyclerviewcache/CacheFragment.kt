@@ -14,6 +14,28 @@ import org.sxczst.enjoyedu.databinding.FragmentUiTopicRecyclerviewCacheBinding
  * @date        2021/4/13 20:28
  */
 class CacheFragment : Fragment() {
+    /**
+     * todo RecyclerView 复用机制
+     * MotionEvent.ACTION_MOVE
+     * scrollByInternal()
+     * scrollStep()
+     * LayoutManager.scrollHorizontallyBy() / LayoutManager.scrollVerticallyBy()
+     * LinearLayoutManager.scrollBy()
+     * LinearLayoutManager.fill()
+     * LinearLayoutManager.recycleByLayoutState()
+     * LinearLayoutManager.layoutChunk() 复用机制
+     * LayoutState.next()
+     * getViewForPosition()
+     * getViewForPosition()
+     * tryGetViewHolderForPositionByDeadline() -> 四级缓存
+     * 1. Recycler.getChangedScrapViewForPosition() -> ArrayList<ViewHolder> mChangedScrap
+     * 2. Recycler.getScrapOrHiddenOrCachedHolderForPosition() -> ArrayList<ViewHolder> mAttachedScrap ; ArrayList<ViewHolder> mCachedViews
+     * 3. Recycler.getScrapOrCachedViewForId()
+     * 4. mViewCacheExtension
+     * 5. getRecycledViewPool().getRecycledView() -> RecycledViewPool mRecyclerPool -> SparseArray<ScrapData> mScrap -> ArrayList<ViewHolder> mScrapHeap -> scrapHeap.remove()
+     * 6. Adapter.createViewHolder()
+     * tryBindViewHolderByDeadline() -> Adapter.bindViewHolder()
+     */
 
     override fun onCreateView(
         inflater: LayoutInflater,
