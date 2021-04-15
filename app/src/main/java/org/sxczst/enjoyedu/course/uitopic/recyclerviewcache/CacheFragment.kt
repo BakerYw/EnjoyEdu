@@ -22,7 +22,7 @@ class CacheFragment : Fragment() {
      * LayoutManager.scrollHorizontallyBy() / LayoutManager.scrollVerticallyBy()
      * LinearLayoutManager.scrollBy()
      * LinearLayoutManager.fill()
-     * LinearLayoutManager.recycleByLayoutState()
+     * LinearLayoutManager.recycleByLayoutState() 回收机制
      * LinearLayoutManager.layoutChunk() 复用机制
      * LayoutState.next()
      * getViewForPosition()
@@ -35,6 +35,31 @@ class CacheFragment : Fragment() {
      * 5. getRecycledViewPool().getRecycledView() -> RecycledViewPool mRecyclerPool -> SparseArray<ScrapData> mScrap -> ArrayList<ViewHolder> mScrapHeap -> scrapHeap.remove()
      * 6. Adapter.createViewHolder()
      * tryBindViewHolderByDeadline() -> Adapter.bindViewHolder()
+     *
+     * todo RecyclerView 回收机制
+     * LinearLayoutManager.fill()
+     * LinearLayoutManager.recycleByLayoutState()
+     * recycleViewsFromEnd() / recycleViewsFromStart()
+     * recycleChildren()
+     * removeAndRecycleViewAt()
+     * Recycler.recycleView()
+     * recycleViewHolderInternal() -> 回收的主要方法。ArrayList<ViewHolder> mCachedViews 先进先出，mViewCacheMax = DEFAULT_CACHE_SIZE
+     * recycleCachedViewAt()
+     * addViewHolderToRecycledViewPool()
+     * putRecycledView() -> DEFAULT_MAX_SCRAP = 5
+     * ViewHolder.resetInternal()
+     *
+     * todo RecyclerView.onLayout() 角度分析 回收复用机制
+     * onLayout()
+     * dispatchLayout()
+     * dispatchLayoutStep1()，dispatchLayoutStep2()，dispatchLayoutStep3()
+     * LayoutManager.onLayoutChildren()
+     * detachAndScrapAttachedViews()
+     * scrapOrRecycleView()
+     * - Recycler.scrapView() -> mAttachedScrap.add(holder)
+     * - recycleViewHolderInternal()
+     *
+     * todo 默认缓存大小 5n+2
      */
 
     override fun onCreateView(
