@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         tools:context="org.sxczst.enjoyedu.course.uitopic.mycardview.CardViewFragment">
 
+        <!--android:layout_margin="@dimen/cardview_margin"-->
         <androidx.cardview.widget.CardView
             android:id="@+id/cv"
             android:layout_width="wrap_content"
@@ -20,6 +21,7 @@
             app:cardCornerRadius="20dp"
             app:cardElevation="20dp"
             app:cardPreventCornerOverlap="false"
+            app:cardUseCompatPadding="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 

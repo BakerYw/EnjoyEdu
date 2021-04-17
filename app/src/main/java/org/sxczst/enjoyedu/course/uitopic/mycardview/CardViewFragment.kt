@@ -28,6 +28,10 @@ class CardViewFragment : Fragment() {
      *
      * todo 圆角问题解决方案
      * app:cardPreventCornerOverlap = false <--> addPaddingForCorners
+     *
+     * todo 阴影问题解决方案
+     * 方案一：设置 layout_margin -> values、values-v21
+     * 方案二：app:cardUseCompatPadding="true"
      */
 
     override fun onCreateView(
