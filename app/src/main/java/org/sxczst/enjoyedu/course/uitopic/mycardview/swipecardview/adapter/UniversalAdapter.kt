@@ -55,11 +55,11 @@ abstract class UniversalAdapter<T>(
     }
 
     private fun isEnabled(viewType: Int): Boolean {
-        TODO("Not yet implemented")
+        return false
     }
 
     private fun getPosition(holder: ViewHolder): Int {
-        TODO("Not yet implemented")
+        return holder.adapterPosition
     }
 
     override fun getItemCount() = mDatas.size

@@ -13,8 +13,11 @@ data class SwipeCardBean(
         fun initData(): ArrayList<SwipeCardBean> {
             val list = arrayListOf<SwipeCardBean>()
             for (i in 0..9) {
-                // TODO: 2021/4/17 URL
-                list + SwipeCardBean(i, "", "Name$i")
+                list += SwipeCardBean(
+                    i,
+                    "http://img5.mtime.cn/pi/2020/02/03/102634.99979499_1000X1000.jpg",
+                    "Name$i"
+                )
             }
             return list
         }

@@ -7,7 +7,11 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardBackgroundColor="#393F4E">
+    app:cardBackgroundColor="#393F4E"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="10dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,6 +21,7 @@
             android:id="@+id/iv"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toTopOf="@id/tv_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,6 +32,7 @@
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@id/btn"
             app:layout_constraintEnd_toEndOf="@id/iv"
             app:layout_constraintStart_toStartOf="@id/iv"
@@ -36,18 +42,21 @@
             android:id="@+id/btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/purple_500"
+            android:text="喜欢"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@id/tv_percent"
             app:layout_constraintEnd_toEndOf="@id/iv"
-            app:layout_constraintStart_toStartOf="@id/iv"
-            tools:text="喜欢" />
+            app:layout_constraintStart_toStartOf="@id/iv" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_percent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/iv"
-            app:layout_constraintStart_toStartOf="@id/iv"
             tools:text="1/10" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
