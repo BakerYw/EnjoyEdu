@@ -8,9 +8,9 @@
 
     <fragment
         android:id="@+id/container"
-        android:name="org.sxczst.enjoyedu.course.uitopic.mycardview.swipecardview.SwipeCardViewFragment"
+        android:name="org.sxczst.enjoyedu.course.uitopic.lesson04.ScrollToAndByFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/fragment_ui_topic_swipe_card_view" />
+        tools:layout="@layout/fragment_ui_topic_scroll_to_and_by_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
