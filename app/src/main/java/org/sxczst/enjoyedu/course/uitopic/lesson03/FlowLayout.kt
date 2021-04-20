@@ -2,9 +2,12 @@ package org.sxczst.enjoyedu.course.uitopic.lesson03
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewGroup
 import org.sxczst.enjoyedu.R
+import kotlin.math.abs
 import kotlin.math.max
 
 /**
@@ -34,6 +37,35 @@ class FlowLayout @JvmOverloads constructor(
 
     private lateinit var heights: ArrayList<Int>
 
+    /**
+     * 用来判断是不是一次滑动
+     */
+    private var mTouchSlop = 0
+
+    private var mLastInterceptX = 0f
+
+    private var mLastInterceptY = 0f
+
+    /**
+     * 表示当前是否需要滑动
+     */
+    private var scrollable = false
+
+    /**
+     * 代表本身的测量高度
+     */
+    private var measureHeight = 0
+
+    /**
+     * 表示内容的高度
+     */
+    private var realHeight = 0
+
+    /**
+     * 表示上一次滑动的位置
+     */
+    private var mLastY = 0f
+
     init {
         /**
          * todo 自定义属性
@@ -47,6 +79,12 @@ class FlowLayout @JvmOverloads constructor(
         } finally {
             a.recycle()
         }
+
+        /**
+         * todo 获取最小滑动距离
+         */
+        val configuration = ViewConfiguration.get(context)
+        mTouchSlop = configuration.scaledPagingTouchSlop
     }
 
     private fun init() {
@@ -57,12 +95,84 @@ class FlowLayout @JvmOverloads constructor(
         heights = arrayListOf()
     }
 
+    /**
+     * 当前这一系列的事件是由本身来消费，还是交由子 View 来消费
+     */
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        val interceptX = ev.x
+        val interceptY = ev.y
+
+        val intercepted = when (ev.action) {
+            MotionEvent.ACTION_DOWN -> {
+                // last XY 初始化
+                mLastInterceptX = interceptX
+                mLastInterceptY = interceptY
+                false
+            }
+            MotionEvent.ACTION_MOVE -> {
+                val dx = interceptX - mLastInterceptX
+                val dy = interceptY - mLastInterceptY
+                // true 表示本身需要拦截处理
+                abs(dx) < abs(dy) && abs(dy) > mTouchSlop
+            }
+            MotionEvent.ACTION_UP -> {
+                false
+            }
+            else -> {
+                false
+            }
+        }
+        mLastInterceptX = interceptX
+        mLastInterceptY = interceptY
+        return intercepted
+    }
+
+    /**
+     * 处理滑动
+     */
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (!scrollable) {
+            return super.onTouchEvent(event)
+        }
+        val currentY = event.y
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                mLastY = currentY
+            }
+            MotionEvent.ACTION_MOVE -> {
+                // 本次手势滑动了多大距离
+                val dy = mLastY - currentY
+                // 已经偏移的距离
+                val oldScrollY = scrollY
+                // 这是本次需要偏移的距离 = 之前已经偏移了的距离 + 本次手势滑动的距离
+                var scrollY = oldScrollY + dy.toInt()
+                // 上边界处理
+                if (scrollY < 0) {
+                    scrollY = 0
+                }
+                // 下边界处理
+                if (scrollY > realHeight - measureHeight) {
+                    scrollY = realHeight - measureHeight
+                }
+                scrollTo(0, scrollY)
+                mLastY = currentY
+            }
+            MotionEvent.ACTION_UP -> {
+
+            }
+            else -> {
+            }
+        }
+        return super.onTouchEvent(event)
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
         val widthSize = MeasureSpec.getSize(widthMeasureSpec)
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+        measureHeight = heightSize
 
         /**
          * 记录当前行的宽度和高度
@@ -98,6 +208,9 @@ class FlowLayout @JvmOverloads constructor(
             // 如果放不下，就换行 并保存当前行的所有子 View，累加行高，当前的宽度，高度 置零。
             if (currentWidth + childWidth > widthSize) {
                 // 换行
+                if (lineViews.size == 1 && lineViews[0].layoutParams.height == ViewGroup.LayoutParams.MATCH_PARENT) {
+                    currentHeight = Utils.dp2px(150)
+                }
                 views.add(lineViews)
                 lineViews = arrayListOf()
                 flowLayoutWidth = max(flowLayoutWidth, currentWidth)
@@ -124,10 +237,17 @@ class FlowLayout @JvmOverloads constructor(
         // 重新测量一次 layout_height = match_parent
         reMeasureChild(widthMeasureSpec, heightMeasureSpec)
 
+        if (heightMode == MeasureSpec.EXACTLY) {
+            flowLayoutHeight = max(heightSize, flowLayoutHeight)
+        }
+
+        realHeight = flowLayoutHeight
+        scrollable = realHeight > measureHeight
+
         // FlowLayout 最终的宽高
         setMeasuredDimension(
             if (widthMode == MeasureSpec.EXACTLY) widthSize else flowLayoutWidth,
-            if (heightMode == MeasureSpec.EXACTLY) heightSize else flowLayoutHeight,
+            flowLayoutHeight,
         )
     }
 
