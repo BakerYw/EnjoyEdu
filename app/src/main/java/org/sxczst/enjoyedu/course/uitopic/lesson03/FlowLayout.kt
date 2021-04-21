@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.widget.Scroller
 import org.sxczst.enjoyedu.R
 import kotlin.math.abs
 import kotlin.math.max
@@ -65,6 +66,11 @@ class FlowLayout @JvmOverloads constructor(
      * 表示上一次滑动的位置
      */
     private var mLastY = 0f
+
+    /**
+     * todo Scroller
+     */
+    private val mScroller = Scroller(context)
 
     init {
         /**
@@ -137,6 +143,9 @@ class FlowLayout @JvmOverloads constructor(
         val currentY = event.y
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                if (!mScroller.isFinished) {
+                    mScroller.abortAnimation()
+                }
                 mLastY = currentY
             }
             MotionEvent.ACTION_MOVE -> {
@@ -154,7 +163,8 @@ class FlowLayout @JvmOverloads constructor(
                 if (scrollY > realHeight - measureHeight) {
                     scrollY = realHeight - measureHeight
                 }
-                scrollTo(0, scrollY)
+                mScroller.startScroll(0, oldScrollY, 0, scrollY)
+                invalidate()
                 mLastY = currentY
             }
             MotionEvent.ACTION_UP -> {
@@ -164,6 +174,14 @@ class FlowLayout @JvmOverloads constructor(
             }
         }
         return super.onTouchEvent(event)
+    }
+
+    override fun computeScroll() {
+        super.computeScroll()
+        if (mScroller.computeScrollOffset()) {
+            scrollTo(0, mScroller.currY)
+            postInvalidate()
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
