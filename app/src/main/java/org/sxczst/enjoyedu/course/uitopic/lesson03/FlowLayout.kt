@@ -2,11 +2,8 @@ package org.sxczst.enjoyedu.course.uitopic.lesson03
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewConfiguration
-import android.view.ViewGroup
-import android.widget.Scroller
+import android.view.*
+import android.widget.OverScroller
 import org.sxczst.enjoyedu.R
 import kotlin.math.abs
 import kotlin.math.max
@@ -69,8 +66,19 @@ class FlowLayout @JvmOverloads constructor(
 
     /**
      * todo Scroller
+     * todo OverScroller
      */
-    private val mScroller = Scroller(context)
+    private val mScroller = OverScroller(context)
+
+    /**
+     * todo VelocityTracker
+     * 要在什么位置回收呢？
+     */
+    private val mVelocityTracker = VelocityTracker.obtain()
+
+    private var mMinimumVelocity = 0
+
+    private var mMaximumVelocity = 0
 
     init {
         /**
@@ -91,6 +99,8 @@ class FlowLayout @JvmOverloads constructor(
          */
         val configuration = ViewConfiguration.get(context)
         mTouchSlop = configuration.scaledPagingTouchSlop
+        mMinimumVelocity = configuration.scaledMinimumFlingVelocity
+        mMaximumVelocity = configuration.scaledMaximumFlingVelocity
     }
 
     private fun init() {
@@ -99,6 +109,29 @@ class FlowLayout @JvmOverloads constructor(
         views = arrayListOf()
 
         heights = arrayListOf()
+    }
+
+    /**
+     * 回弹效果
+     */
+    private fun fling(velocity: Int) {
+        if (childCount > 0) {
+            val height = measureHeight
+            val bottom = realHeight
+            mScroller.fling(
+                scrollX,
+                scrollY,
+                0,
+                velocity,
+                0,
+                0,
+                0,
+                max(0, bottom - height),
+                0,
+                height / 2
+            )
+            postInvalidateOnAnimation()
+        }
     }
 
     /**
@@ -140,6 +173,7 @@ class FlowLayout @JvmOverloads constructor(
         if (!scrollable) {
             return super.onTouchEvent(event)
         }
+        mVelocityTracker.addMovement(event)
         val currentY = event.y
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -151,24 +185,26 @@ class FlowLayout @JvmOverloads constructor(
             MotionEvent.ACTION_MOVE -> {
                 // 本次手势滑动了多大距离
                 val dy = mLastY - currentY
-                // 已经偏移的距离
-                val oldScrollY = scrollY
-                // 这是本次需要偏移的距离 = 之前已经偏移了的距离 + 本次手势滑动的距离
-                var scrollY = oldScrollY + dy.toInt()
-                // 上边界处理
-                if (scrollY < 0) {
-                    scrollY = 0
-                }
-                // 下边界处理
-                if (scrollY > realHeight - measureHeight) {
-                    scrollY = realHeight - measureHeight
-                }
-                mScroller.startScroll(0, oldScrollY, 0, scrollY)
+                mScroller.startScroll(0, mScroller.finalY, 0, dy.toInt())
                 invalidate()
                 mLastY = currentY
             }
             MotionEvent.ACTION_UP -> {
-
+                mVelocityTracker.computeCurrentVelocity(1000, mMaximumVelocity.toFloat())
+                val yVelocity = mVelocityTracker.yVelocity
+                if (abs(yVelocity) > mMinimumVelocity) {
+                    fling(-yVelocity.toInt())
+                } else if (mScroller.springBack(
+                        scrollX,
+                        scrollY,
+                        0,
+                        0,
+                        0,
+                        realHeight - measureHeight
+                    )
+                ) {
+                    postInvalidateOnAnimation()
+                }
             }
             else -> {
             }
